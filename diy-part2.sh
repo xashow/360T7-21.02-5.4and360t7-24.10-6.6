@@ -15,25 +15,24 @@ rm -rfv feeds/luci/themes/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/themes/luci-theme-argon
 git -C feeds/luci/themes/luci-theme-argon checkout 1991a8e29ef6a086fb566517675edc85b1be629a
 
-# 修改默认 LAN IP → 192.168.6.254
-CFG=package/base-files/files/bin/config_generate
-if [ -f "$CFG" ]; then
-  echo "--- 替换前 192.168.1.1 出现位置 ---"
-  grep -n "192\.168\.1\.1" "$CFG" || true
+# ============================================================
+# 默认 LAN IP 改为 192.168.6.254（用 uci-defaults，首次启动生效）
+# 不依赖源码里 config_generate 的具体写法，避免 sed 找不到 192.168.1.1
+# ============================================================
+mkdir -p files/etc/uci-defaults
+cat > files/etc/uci-defaults/99-set-lan-ip <<'EOF'
+#!/bin/sh
+uci set network.lan.ipaddr='192.168.6.254'
+uci commit network
+exit 0
+EOF
+chmod +x files/etc/uci-defaults/99-set-lan-ip
 
-  # 精确改 lan 行
-  sed -i '/lan) ipad=/{s/192\.168\.1\.1/192.168.6.254/}' "$CFG"
-
-  # 兜底：若未命中则全局替换
-  if ! grep -q "192\.168\.6\.254" "$CFG"; then
-    echo "精确替换未命中，执行全局替换"
-    sed -i 's/192\.168\.1\.1/192.168.6.254/g' "$CFG"
-  fi
-
-  grep -q "192\.168\.6\.254" "$CFG" && echo "IP 已改为 192.168.6.254" || { echo "IP 替换失败"; exit 1; }
-
-  # 可选：设置主机名
-  sed -i -E "s/(hostname=['\"])ImmortalWrt(['\"])/\1360T7\2/" "$CFG" 2>/dev/null || true
-else
-  echo "未找到 $CFG"; exit 1
-fi
+# 可选：主机名改为 360T7
+cat > files/etc/uci-defaults/99-set-hostname <<'EOF'
+#!/bin/sh
+uci set system.@system[0].hostname='360T7'
+uci commit system
+exit 0
+EOF
+chmod +x files/etc/uci-defaults/99-set-hostname
