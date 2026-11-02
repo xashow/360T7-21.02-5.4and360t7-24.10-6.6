@@ -21,7 +21,7 @@ jobs:
     env:
       TZ: Asia/Shanghai
       REPO_URL: https://github.com/chasey-dev/immortalwrt-mt798x-rebase
-      REPO_BRANCH: openwrt-25.12-6.12
+      REPO_BRANCH: 25.12
 
     steps:
     - name: 检出仓库
