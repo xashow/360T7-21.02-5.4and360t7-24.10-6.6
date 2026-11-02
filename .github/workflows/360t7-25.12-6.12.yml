@@ -115,11 +115,16 @@ jobs:
         make defconfig
         echo "::endgroup::"
 
+        echo "::group::调试：查看 defconfig 后的 360t7 相关配置"
+        grep '360t7' .config || echo "没有任何 360t7 的配置！"
+        echo "::endgroup::"
+
+        echo "::group::验证 360T7 关键配置"
         if ! grep -q 'CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7=y' .config; then
           echo "错误: 配置中缺少 360T7 非UBI Profile"
           exit 1
         fi
-
+        echo "::endgroup::"
         echo "::group::make download"
         make download -j8 || make download -j1 V=s
         find dl -size -1024c -exec rm -f {} \;
