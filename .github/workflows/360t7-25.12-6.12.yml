@@ -115,16 +115,24 @@ jobs:
         make defconfig
         echo "::endgroup::"
 
-        echo "强制锁定360T7非UBI，防止defconfig冲刷profile"
-        echo "CONFIG_TARGET_mediatek_filogic_DEVICE_qihoo_360t7=y" >> .config
-        sed -i 's/CONFIG_TARGET_mediatek_filogic_DEVICE_qihoo_360t7-ubi=y/# CONFIG_TARGET_mediatek_filogic_DEVICE_qihoo_360t7-ubi is not set/' .config
+        echo "强制锁定360T7非UBI（官方设备开关格式）"
+        sed -i 's/^# CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7 is not set/CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7=y/' .config
+        grep -q '^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7=y' .config || echo 'CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7=y' >> .config
+        # 屏蔽UBI版本
+        sed -i 's/^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7-ubi=y/# CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7-ubi is not set/' .config
+        # 屏蔽其余所有设备，只保留360T7
+        for d in $(grep -o '^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_[a-z0-9_-]*=y' .config | sed 's/^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_//;s/=y//'); do
+          if [ "$d" != "qihoo_360t7" ]; then
+            sed -i "s/^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_$d=y/# CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_$d is not set/" .config
+          fi
+        done
 
         echo "::group::调试：查看 360t7 相关配置"
         grep -E 'qihoo_360t7' .config || echo "没有任何 360t7 的配置！"
         echo "::endgroup::"
 
         echo "::group::验证 360T7 关键配置"
-        if ! grep -q 'CONFIG_TARGET_mediatek_filogic_DEVICE_qihoo_360t7=y' .config; then
+        if ! grep -q 'CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_qihoo_360t7=y' .config; then
           echo "错误: 配置中缺少 360T7 非UBI Profile"
           exit 1
         fi
