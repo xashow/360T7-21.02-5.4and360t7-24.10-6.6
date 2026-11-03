@@ -213,7 +213,10 @@ jobs:
       with:
         name: "ImmortalWrt-360T7"
         tag: ${{ steps.release.outputs.tag }}
-        artifacts: "openwrt/bin/targets/*/*/*"
+        artifacts: |
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-initramfs-recovery.itb
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-preloader.bin
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-squashfs-sysupgrade.itb
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
         bodyFile: /tmp/desc.txt
@@ -223,7 +226,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: OpenWrt_360T7-${{ github.run_number }}
-        path: openwrt/bin
+        path: |
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-initramfs-recovery.itb
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-preloader.bin
+          openwrt/bin/targets/mediatek/filogic/immortalwrt-mediatek-filogic-qihoo_360t7-squashfs-sysupgrade.itb
 
     - name: 清理旧记录
       uses: Mattraks/delete-workflow-runs@v2
