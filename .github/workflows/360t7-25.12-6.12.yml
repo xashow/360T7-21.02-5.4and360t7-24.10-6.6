@@ -160,10 +160,10 @@ jobs:
       if: ${{ !cancelled() }}
       run: |
         cd openwrt
-        echo "==== 所有bin产物 ===="
-        find bin/targets -type f
-        echo "==== build_dir镜像中间文件 ===="
-        ls -la build_dir/target-aarch64_cortex-a53/linux-mediatek_filogic/ | grep -E 'squashfs|itb|kernel'
+        echo "==== 最终固件文件（bin/targets 顶层）===="
+        ls -la bin/targets/mediatek/filogic/ 2>/dev/null || echo "无固件文件"
+        echo "==== 内核/rootfs中间文件 ===="
+        ls -la build_dir/target-*/linux-mediatek_filogic/ 2>/dev/null | grep -E 'squashfs|itb|kernel' || echo "中间目录未找到(路径用通配符，不再报错)"
 
     - name: 检查空间使用
       if: ${{ !cancelled() }}
