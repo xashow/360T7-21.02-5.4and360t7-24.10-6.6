@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p files/etc/uci-defaults
+
 # 修改LAN IP
 cat > files/etc/uci-defaults/99-set-lan-ip <<'EOF'
 #!/bin/sh
