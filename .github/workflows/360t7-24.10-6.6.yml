@@ -91,12 +91,6 @@ jobs:
         cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
         echo "::endgroup::"
 
-    - name: 回退内核到 6.6.160
-      working-directory: /workdir/openwrt
-      run: |
-        sed -i 's/LINUX_VERSION-6.6 = .161/LINUX_VERSION-6.6 = .160/' include/kernel-6.6
-        sed -i 's/LINUX_KERNEL_HASH-6.6.161 = .*/LINUX_KERNEL_HASH-6.6.160 = b24c40a9e2188695803358567edda51c4080176424a57dbefca45e5ac44ec2225/' include/kernel-6.6
-
     - name: 应用 DIY 配置
       run: |
         echo "::group::复制配置文件"
