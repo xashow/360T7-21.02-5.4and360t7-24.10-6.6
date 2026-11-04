@@ -73,7 +73,8 @@ jobs:
     - name: 拉取 Aurora 主题
       working-directory: /workdir/openwrt/package
       run: |
-        git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora.git
+       [ -d luci-theme-aurora ] || git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora.git
+
 
     - name: 恢复 Ccache
       uses: actions/cache@v4
