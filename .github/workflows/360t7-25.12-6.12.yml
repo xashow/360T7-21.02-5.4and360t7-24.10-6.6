@@ -70,11 +70,14 @@ jobs:
         ln -sf /workdir/openwrt "$GITHUB_WORKSPACE/openwrt"
         echo "::endgroup::"
 
-    - name: 拉取 Aurora 主题
+    - name: 拉取 Vantage 主题
       working-directory: /workdir/openwrt/package
       run: |
-       [ -d luci-theme-aurora ] || git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora.git
-
+        rm -rf vantage-src
+        git clone --depth=1 https://github.com/anothaDev/luci-theme-vantage.git vantage-src
+        mv vantage-src/luci-theme-vantage ./luci-theme-vantage
+        mv vantage-src/luci-app-vantage ./luci-app-vantage
+        rm -rf vantage-src
 
     - name: 恢复 Ccache
       uses: actions/cache@v4
