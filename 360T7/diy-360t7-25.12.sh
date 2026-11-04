@@ -1,13 +1,4 @@
 #!/bin/bash
-# ============================================================
-# 替换 Luci 源为 immortalwrt 25.12
-# 设置默认LAN：192.168.6.254
-# 设置主机名：360T7
-# ============================================================
-sed -i '/^src-git luci/d' feeds.conf.default
-echo 'src-git luci https://github.com/immortalwrt/luci.git;25.12' >> feeds.conf.default
-
-mkdir -p files/etc/uci-defaults
 
 # 修改LAN IP
 cat > files/etc/uci-defaults/99-set-lan-ip <<'EOF'
